@@ -28,14 +28,19 @@ class _GameScreenState extends State<GameScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double cardHeight = MediaQuery.of(context).size.height / 5;
+    double cardWidth = cardHeight / 1.5;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Truco Paulista'),
       ),
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text('${gameState.player1.name} - Score: ${gameState.player1.score}'),
           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: gameState.player1.hand
                 .map((card) => GestureDetector(
                       onTap: () {
@@ -43,12 +48,18 @@ class _GameScreenState extends State<GameScreen> {
                           playCard(gameState.player1.hand.indexOf(card));
                         }
                       },
-                      child: CardWidget(card: card),
+                      child: SizedBox(
+                        height: cardHeight,
+                        width: cardWidth,
+                        child: CardWidget(card: card),
+                      ),
                     ))
                 .toList(),
           ),
+          SizedBox(height: 20),
           Text('${gameState.player2.name} - Score: ${gameState.player2.score}'),
           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: gameState.player2.hand
                 .map((card) => GestureDetector(
                       onTap: () {
@@ -56,7 +67,11 @@ class _GameScreenState extends State<GameScreen> {
                           playCard(gameState.player2.hand.indexOf(card));
                         }
                       },
-                      child: CardWidget(card: card),
+                      child: SizedBox(
+                        height: cardHeight,
+                        width: cardWidth,
+                        child: CardWidget(card: card),
+                      ),
                     ))
                 .toList(),
           ),
