@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
+import 'screens/home_screen.dart';
 
 void main() {
-  runApp(const MainApp());
+  runApp(TrucoPaulistaApp());
 }
 
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
-
+class TrucoPaulistaApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
-        ),
+    return MaterialApp(
+      title: 'Truco Paulista',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
       ),
+      home: HomeScreen(),
     );
   }
 }
