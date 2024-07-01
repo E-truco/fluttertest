@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../models/deck.dart';
+import '../models/game_state.dart';
 import '../models/player.dart';
 import '../widgets/card_widget.dart';
 
@@ -9,19 +9,21 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
-  late Deck deck;
-  late Player player1;
-  late Player player2;
+  late GameState gameState;
 
   @override
   void initState() {
     super.initState();
-    deck = Deck();
-    player1 = Player(name: 'Player 1');
-    player2 = Player(name: 'Player 2');
+    Player player1 = Player(name: 'Player 1');
+    Player player2 = Player(name: 'Player 2');
+    gameState = GameState(player1, player2);
+    gameState.startRound();
+  }
 
-    player1.receiveCards(deck.deal(3));
-    player2.receiveCards(deck.deal(3));
+  void playCard(int cardIndex) {
+    setState(() {
+      gameState.playCard(cardIndex);
+    });
   }
 
   @override
@@ -32,16 +34,30 @@ class _GameScreenState extends State<GameScreen> {
       ),
       body: Column(
         children: <Widget>[
-          Text(player1.name),
+          Text('${gameState.player1.name} - Score: ${gameState.player1.score}'),
           Row(
-            children: player1.hand
-                .map((card) => CardWidget(card: card))
+            children: gameState.player1.hand
+                .map((card) => GestureDetector(
+                      onTap: () {
+                        if (gameState.currentPlayer == gameState.player1) {
+                          playCard(gameState.player1.hand.indexOf(card));
+                        }
+                      },
+                      child: CardWidget(card: card),
+                    ))
                 .toList(),
           ),
-          Text(player2.name),
+          Text('${gameState.player2.name} - Score: ${gameState.player2.score}'),
           Row(
-            children: player2.hand
-                .map((card) => CardWidget(card: card))
+            children: gameState.player2.hand
+                .map((card) => GestureDetector(
+                      onTap: () {
+                        if (gameState.currentPlayer == gameState.player2) {
+                          playCard(gameState.player2.hand.indexOf(card));
+                        }
+                      },
+                      child: CardWidget(card: card),
+                    ))
                 .toList(),
           ),
         ],
