@@ -4,6 +4,8 @@ import 'card.dart';
 
 enum RoundStage { notStarted, inProgress, finished }
 
+enum TrucoStage { notCalled, trucoCalled, seisCalled, noveCalled, dozeCalled }
+
 class GameState {
   Deck deck;
   Player player1;
@@ -11,6 +13,8 @@ class GameState {
   List<Card> table = [];
   int currentPlayerIndex = 0;
   RoundStage roundStage = RoundStage.notStarted;
+  TrucoStage trucoStage = TrucoStage.notCalled;
+  int trucoMultiplier = 1; // Base multiplier for truco calls
 
   GameState(this.player1, this.player2) : deck = Deck();
 
@@ -21,6 +25,8 @@ class GameState {
     table.clear();
     currentPlayerIndex = 0;
     roundStage = RoundStage.inProgress;
+    trucoStage = TrucoStage.notCalled;
+    trucoMultiplier = 1;
   }
 
   Player get currentPlayer => currentPlayerIndex == 0 ? player1 : player2;
@@ -37,17 +43,50 @@ class GameState {
   }
 
   void determineRoundWinner() {
-    // Assuming higher card value wins
+    // Determine winner logic based on card values
     if (table[0].value > table[1].value) {
-      player1.score++;
+      player1.score += trucoMultiplier;
     } else {
-      player2.score++;
+      player2.score += trucoMultiplier;
     }
 
     table.clear();
 
     if (player1.hand.isEmpty && player2.hand.isEmpty) {
       roundStage = RoundStage.finished;
+      // Handle end of game (Navigate to GameOverScreen or show a message)
+    }
+  }
+
+  void callTruco() {
+    if (trucoStage == TrucoStage.notCalled) {
+      trucoStage = TrucoStage.trucoCalled;
+      trucoMultiplier = 2;
+      // Optionally notify UI or players about the truco call
+    }
+  }
+
+  void callSeis() {
+    if (trucoStage == TrucoStage.trucoCalled) {
+      trucoStage = TrucoStage.seisCalled;
+      trucoMultiplier = 3;
+      // Optionally notify UI or players about the Seis call
+    }
+  }
+
+  void callNove() {
+    if (trucoStage == TrucoStage.seisCalled) {
+      trucoStage = TrucoStage.noveCalled;
+      trucoMultiplier = 4;
+      // Optionally notify UI or players about the Nove call
+    }
+  }
+
+  void callDoze() {
+    if (trucoStage == TrucoStage.noveCalled) {
+      trucoStage = TrucoStage.dozeCalled;
+      trucoMultiplier = 6;
+      // Optionally notify UI or players about the Doze call
     }
   }
 }
